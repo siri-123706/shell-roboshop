@@ -3,13 +3,13 @@
 AMI_ID="ami-09c813fb71547fc4f"
 SG_ID="sg-02b7e678afecd2521" # replace with your SG ID
 INSTANCES=("mongodb" "redies" "frontend" "mysql" "rabbitmq" "catalogue" "user" "cart" "shipping" "payment" "dispatch")
-ZONE_ID="Z0673912SPW6GV3I8NW2" # replace with your ZONE ID
+ZONE_ID="Z04883011QFSCKV38CX5P" # replace with your ZONE ID
 DOMAIN_NAME="daws84s.cfd" # replace with your domain
 
 #for instance in ${INSTANCES[@]}
 for instance in $@
 do
-    INSTANCE_ID=$(aws ec2 run-instances --image-id ami-09c813fb71547fc4f --instance-type t3.micro --security-group-ids sg-05145aa983b96af38 --tag-specifications "ResourceType=instance,Tags=[{Key=Name, Value=$instance}]" --query "Instances[0].InstanceId" --output text)
+    INSTANCE_ID=$(aws ec2 run-instances --image-id ami-09c813fb71547fc4f --instance-type t3.micro --security-group-ids sg-02b7e678afecd2521sg-02b7e678afecd2521 --tag-specifications "ResourceType=instance,Tags=[{Key=Name, Value=$instance}]" --query "Instances[0].InstanceId" --output text)
     if [ $instance !="frontend"]
     
     then

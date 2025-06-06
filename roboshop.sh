@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 
 AMI_ID="ami-09c813fb71547fc4f"
 SG_ID="sg-02b7e678afecd2521" # replace with your SG ID

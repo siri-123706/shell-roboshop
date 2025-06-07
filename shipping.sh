@@ -82,7 +82,7 @@ dnf install mysql -y  &>>$LOG_FILE
 VALIDATE $? "Install MySQL"
 
 #mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -pRoboShop@1 < /app/db/master-data.sql
-mysql -h mysql.daws84s.cfd -uroot -p$MYSQL_ROOT_PASSWORD -e 'use cities' &>>$LOG_FILE
+mysql -h mysql.daws84s.cfd -u root -p$MYSQL_ROOT_PASSWORD -e 'use cities' &>>$LOG_FILE
 if [ $? -ne 0 ]
 then
     mysql -h mysql.daws84s.cfd -uroot -p$MYSQL_ROOT_PASSWORD < /app/db/schema.sql &>>$LOG_FILE

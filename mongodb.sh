@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 USERID=$(id -u)
@@ -6,7 +5,7 @@ R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
-LOGS_FOLDER="/var/log/roboshop-logs"
+LOGS_FOLDER="/var/log/roboshop-logs" 
 SCRIPT_NAME=$(echo $0 | cut -d "." -f1)
 LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log"
 
@@ -33,7 +32,7 @@ VALIDATE(){
     fi
 }
 
-cp mongo.repo /etc/yum.repos.d/mongodb.repo
+cp mongo.repo /etc/yum.repos.d/mongodb.repo #cp mongodb.repo /etc/yum.repos.d/mongo.repo copy mongo.repo
 VALIDATE $? "Copying MongoDB repo"
 
 dnf install mongodb-org -y &>>$LOG_FILE
@@ -43,9 +42,9 @@ systemctl enable mongod &>>$LOG_FILE
 VALIDATE $? "Enabling MongoDB"
 
 systemctl start mongod &>>$LOG_FILE
-VALIDATE $? "Starting MongoDB"
+VALIDATE $? "Starting MongoDB" #systemctl status mongod
 
-sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mongod.conf
+sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mongod.conf #editing mongodb port permnent 127.0.01-->0.0.0.0
 VALIDATE $? "Editing MongoDB conf file for remote connections"
 
 systemctl restart mongod &>>$LOG_FILE

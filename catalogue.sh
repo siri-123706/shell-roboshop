@@ -42,22 +42,22 @@ VALIDATE $? "Enabling nodejs:20"
 dnf install nodejs -y &>>$LOG_FILE
 VALIDATE $? "Installing nodejs:20"
 
-id roboshop
-if [ $? -ne 0 ]
+id roboshop 
+if [ $? -ne 0 ] #user if not created then created user
 then
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
     VALIDATE $? "Creating roboshop system user"
 else
-    echo -e "System user roboshop already created ... $Y SKIPPING $N"
+    echo -e "System user roboshop already created ... $Y SKIPPING $N" #user alerady created then skipping user via $Y 
 fi
 
-mkdir -p /app 
-VALIDATE $? "Creating app directory"
+mkdir -p /app #createing directory & -p if created then skipping 
+VALIDATE $? "Creating app directory" #checks created or not
 
 curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$LOG_FILE
 VALIDATE $? "Downloading Catalogue"
 
-rm -rf /app/*
+rm -rf /app/* #before unziping remove existing content
 cd /app 
 unzip /tmp/catalogue.zip &>>$LOG_FILE
 VALIDATE $? "unzipping catalogue"
@@ -78,7 +78,7 @@ dnf install mongodb-mongosh -y &>>$LOG_FILE
 VALIDATE $? "Installing MongoDB Client"
 
 STATUS=$(mongosh --host mongodb.daws84s.cfd --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
-if [ $STATUS -lt 0 ]
+if [ $STATUS -lt 0 ] #data checks data is loaded ,<0 data is not available 
 then
     mongosh --host mongodb.daws84s.cfd </app/db/master-data.js &>>$LOG_FILE
     VALIDATE $? "Loading data into MongoDB"

@@ -1,6 +1,6 @@
 
 #!/bin/bash
-
+# Starts log and timer
 START_TIME=$(date +%s)
 USERID=$(id -u)
 R="\e[31m"
@@ -15,7 +15,7 @@ mkdir -p $LOGS_FOLDER
 echo "Script started executing at: $(date)" | tee -a $LOG_FILE
 
 # check the user has root priveleges or not
-if [ $USERID -ne 0 ]
+if [ $USERID -ne 0 ] #Checks for root user
 then
     echo -e "$R ERROR:: Please run this script with root access $N" | tee -a $LOG_FILE
     exit 1 #give other than 0 upto 127
@@ -30,24 +30,24 @@ VALIDATE(){
         echo -e "$2 is ... $G SUCCESS $N" | tee -a $LOG_FILE
     else
         echo -e "$2 is ... $R FAILURE $N" | tee -a $LOG_FILE
-        exit 1
+        exit 1 # if failure then stop here exit1
     fi
 }
 
-dnf module disable redis -y &>>$LOG_FILE
+dnf module disable redis -y &>>$LOG_FILE #Installs disable redis
 VALIDATE $? "Disabling Default Redis version"
 
-dnf module enable redis:7 -y &>>$LOG_FILE
+dnf module enable redis:7 -y &>>$LOG_FILE #Enables and starts redis service
 VALIDATE $? "Enabling Redis:7"
 
-dnf install redis -y &>>$LOG_FILE
-VALIDATE $? "Installing Redis"
+dnf install redis -y &>>$LOG_FILE #install redis 
+VALIDATE $? "Installing Redis" #$? checks properly installed or not
 
 sed -i -e 's/127.0.0.1/0.0.0.0/g' -e '/protected-mode/ c protected-mode no' /etc/redis/redis.conf
 VALIDATE $? "Edited redis.conf to accept remote connections"
 
 systemctl enable redis &>>$LOG_FILE
-VALIDATE $? "Enabling Redis"
+VALIDATE $? "Enabling Redis" #$? checks properly installed or not
 
 systemctl start redis  &>>$LOG_FILE
 VALIDATE $? "Started Redis"

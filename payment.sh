@@ -59,11 +59,11 @@ VALIDATE $? "unzipping payment"
 
 pip3 install -r requirements.txt &>>$LOG_FILE
 VALIDATE $? "Installing dependencies"
-
+# $script_dir/papent.serice copy to this  /etc/systemd/system/payment.service
 cp $SCRIPT_DIR/payment.service /etc/systemd/system/payment.service &>>$LOG_FILE
 VALIDATE $? "Copying payment service"
 
-systemctl daemon-reload &>>$LOG_FILE
+systemctl daemon-reload &>>$LOG_FILE #payment.service any changes in this service after run daemon reload
 VALIDATE $? "Daemon Reload"
 
 systemctl enable payment &>>$LOG_FILE

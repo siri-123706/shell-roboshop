@@ -1,6 +1,5 @@
 #!/bin/bash
 
-START_TIME=$(date +%s)
 USERID=$(id -u)
 R="\e[31m"
 G="\e[32m"
@@ -23,9 +22,6 @@ else
     echo "You are running with root access" | tee -a $LOG_FILE
 fi
 
-echo "Please enter rabbitmq password to setup"
-read -s RABBITMQ_PASSWD
-
 # validate functions takes input as exit status, what command they tried to install
 VALIDATE(){
     if [ $1 -eq 0 ]
@@ -37,22 +33,34 @@ VALIDATE(){
     fi
 }
 
-cp rabbitmq.repo /etc/yum.repos.d/rabbitmq.repo
-VALIDATE $? "Adding rabbitmq repo"
+dnf module disable nginx -y &>>$LOG_FILE
+VALIDATE $? "Disabling Default Nginx"
 
-dnf install rabbitmq-server -y &>>$LOG_FILE
-VALIDATE $? "Installing rabbitmq server"
+dnf module enable nginx:1.24 -y &>>$LOG_FILE
+VALIDATE $? "Enabling Nginx:1.24"
 
-systemctl enable rabbitmq-server &>>$LOG_FILE
-VALIDATE $? "Enabling rabbitmq server"
+dnf install nginx -y &>>$LOG_FILE
+VALIDATE $? "Installing Nginx"
 
-systemctl start rabbitmq-server &>>$LOG_FILE
-VALIDATE $? "Starting rabbitmq server"
+systemctl enable nginx  &>>$LOG_FILE
+systemctl start nginx 
+VALIDATE $? "Starting Nginx"
 
-rabbitmqctl add_user roboshop $RABBITMQ_PASSWD &>>$LOG_FILE
-rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*" &>>$LOG_FILE
+rm -rf /usr/share/nginx/html/* &>>$LOG_FILE
+VALIDATE $? "Removing default content"
 
-END_TIME=$(date +%s)
-TOTAL_TIME=$(( $END_TIME - $START_TIME ))
+curl -o /tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip &>>$LOG_FILE
+VALIDATE $? "Downloading frontend"
 
-echo -e "Script exection completed successfully, $Y time taken: $TOTAL_TIME seconds $N" | tee -a $LOG_FILE
+cd /usr/share/nginx/html 
+unzip /tmp/frontend.zip &>>$LOG_FILE
+VALIDATE $? "unzipping frontend"
+
+rm -rf /etc/nginx/nginx.conf &>>$LOG_FILE
+VALIDATE $? "Remove default nginx conf"
+
+cp $SCRIPT_DIR/nginx.conf /etc/nginx/nginx.conf
+VALIDATE $? "Copying nginx.conf"
+
+systemctl restart nginx 
+VALIDATE $? "Restarting nginx"

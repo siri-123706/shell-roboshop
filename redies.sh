@@ -1,13 +1,12 @@
-
 #!/bin/bash
-# Starts log and timer
+         # Starts log and timer
 START_TIME=$(date +%s)
 USERID=$(id -u)
 R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
-LOGS_FOLDER="/var/log/roboshop-logs"
+LOGS_FOLDER="/var/log/roboshop-logs" 
 SCRIPT_NAME=$(echo $0 | cut -d "." -f1)
 LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log"
 
@@ -44,7 +43,7 @@ dnf install redis -y &>>$LOG_FILE #install redis
 VALIDATE $? "Installing Redis" #$? checks properly installed or not
 
 sed -i -e 's/127.0.0.1/0.0.0.0/g' -e '/protected-mode/ c protected-mode no' /etc/redis/redis.conf
-VALIDATE $? "Edited redis.conf to accept remote connections"
+VALIDATE $? "Edited redis.conf to accept remote connections" # s->substitue, -i->replace all at runtime ,-e->perment change
 
 systemctl enable redis &>>$LOG_FILE
 VALIDATE $? "Enabling Redis" #$? checks properly installed or not

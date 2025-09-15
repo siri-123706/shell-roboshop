@@ -78,10 +78,10 @@ dnf install mongodb-mongosh -y &>>$LOG_FILE
 VALIDATE $? "Installing MongoDB Client"
 
 STATUS=$(mongosh --host mongodb.daws84s.cfd --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
-if [ $STATUS -lt 0 ]
-then
-    mongosh --host mongodb.daws84s.cfd </app/db/master-data.js &>>$LOG_FILE
-    VALIDATE $? "Loading data into MongoDB"
+if [ -z "$COUNT" ] || [ "$COUNT" -lt 1 ]; then
+  echo "Loading schema..."
+  # load schema here
 else
-    echo -e "Data is already loaded ... $Y SKIPPING $N"
+  echo "Data is already loaded ...  SKIPPING"
 fi
+

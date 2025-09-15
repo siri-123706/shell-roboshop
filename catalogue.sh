@@ -77,7 +77,7 @@ cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
 dnf install mongodb-mongosh -y &>>$LOG_FILE
 VALIDATE $? "Installing MongoDB Client"
 
-STATUS=$(mongosh --host mongodb.daws84s.cfd --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
+STATUS=$(mongosh --host 172.31.31.132 --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
 if [ -z "$COUNT" ] || [ "$COUNT" -lt 1 ]; then
   echo "Loading schema..."
   # load schema here
